@@ -1,0 +1,63 @@
+OSC
+	< back
+	sine am|128
+	sine add|129
+	sine fm|130
+	square am|131
+	square add|132
+	square fm|133
+	square pw|134
+	square 2x|135
+	square 3x|136
+	triangle am|137
+	triangle add|138
+	triangle fm|139
+	triangle saw|140
+	triangle 2x|141
+	triangle 3x|142
+	quantize|143
+	cvout|144
+Noise|145
+LFO
+	< back
+	LFO sine|146
+	LFO square|147
+	LFO triangle|148
+VCF
+	< back
+	2 pole v1|150
+	2 pole v2|151
+	4 pole|152
+	test|153
+VCA|160
+SnH|161
+Envelope
+	<back
+	ADSR|162
+	ADR|163
+Delay|164
+CV_Play|165
+Settings
+	< back
+	calibrate
+		< back
+		help|200
+		out minus10|201
+		out 0V|202
+		out 3V3|203
+		out 10V|204
+		in1 to out1|205
+		in2 to out1|206
+		pass thru|207
+		square A4|208
+		manual sine|209
+		manual CV|210
+	about
+		< back
+		Modular 1337
+		Version 0.85
+Not Implemented
+	< back
+	Mixer
+	Sequencer
+	Sampler
