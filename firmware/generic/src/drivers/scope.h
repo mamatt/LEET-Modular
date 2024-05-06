@@ -1,7 +1,7 @@
 #ifndef __SCOPE_H
 #define __SCOPE_H
 #include <stdint.h>
-#include "drivers\display.h"
+#include "drivers/display.h"
 // Drawing of scope data:
 /* Two basic approaches:
     1:  Don't remember any scope data and simply overwrite the

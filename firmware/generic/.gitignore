@@ -1,0 +1,6 @@
+packages/framework-gd32vf103-sdk/
+packages/toolchain-gd32v/
+packages/tool-gd32vflash/
+packages/tool-openocd-gd32v/
+.pio/
+.vscode/

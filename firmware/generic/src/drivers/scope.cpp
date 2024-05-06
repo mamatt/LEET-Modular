@@ -1,5 +1,5 @@
 #include "scope.h"
-#include "drivers\display.h"
+#include "drivers/display.h"
 scope::scope(uint16_t Colour)
 {
     this->Colour = Colour;
