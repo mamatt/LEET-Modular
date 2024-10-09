@@ -1,0 +1,2 @@
+ - Download required packages from : https://sourceforge.net/projects/platformio-storage/files/packages/
+ - Extract them into packages directory
