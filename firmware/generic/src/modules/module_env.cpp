@@ -1,23 +1,15 @@
-//-----10|-------20|-------30|-------40|-------50|-------60|-------70|-------80|
-#include "module_adsr.h"
-//#include <stdint.h>
+
+#include "module_env.h"
 #include <stdio.h>
 #include "drivers/display.h"
-// compressed image generated with python script (used by init)
-const uint8_t img_env[196] = {255, 255, 255, 255, 255, 255, 255, 255, 126, 65, 15, 59, 15, 4, 48, 10, 82, 0, 12, 1, 59, 0, 12, 1, 52, 0, 94, 0, 10, 0, 62, 0, 10, 0, 151, 0, 8, 0, 64, 0, 8, 0, 66, 0, 85, 0, 6, 0, 66, 0, 6, 0, 55, 0, 255, 83, 0, 4, 0, 68, 0, 4, 0, 67, 0, 226, 0, 255, 234, 0, 226, 0, 41, 59, 15, 48, 255, 55, 0, 10, 0, 255, 255, 195, 0, 10, 0, 31, 59, 255, 255, 103, 0, 10, 0, 255, 255, 195, 0, 10, 0, 255, 255, 195, 0, 10, 0, 255, 255, 4, 59, 130, 0, 10, 0, 255, 222, 0, 226, 0, 255, 33, 59, 91, 37, 10, 0, 255, 255, 207, 0, 103, 0, 74, 0, 156, 0, 74, 0, 62, 0, 105, 0, 74, 0, 154, 0, 74, 0, 62, 0, 97, 0, 8, 0, 64, 0, 8, 0, 52, 0, 97, 0, 10, 1, 61, 0, 10, 0, 50, 0, 96, 1, 13, 1, 56, 2, 12, 1, 46, 1, 32, 64, 17, 3, 48, 3, 17, 46, 255, 255, 255, 255, 255, 255, 177};
-
-#define black RGBToWord(0x00, 0x00, 0x00)
-#define aColor RGBToWord(0xff, 0x00, 0xff)
-#define dColor RGBToWord(0xff, 0xff, 0x00)
-#define sColor RGBToWord(0xaa, 0xaa, 0xaa)
-#define rColor RGBToWord(0x00, 0x55, 0xff)
-#define logoColor RGBToWord(0x00, 0xff, 0xff)
+#include "res/colors.h"
 
 // Generate envelope (ADSR / Attack Decay Sustain Release) waveform.
 // All transitions are linear, but could be exponential by altering functions below.
 // Operates between 0V to +5V (2048 - 3008)
 // Sustain level is fixed to 50% (2.5V or 2528) since there are only three potentiometers avaliable
-uint16_t module_adsr::int_adsr(uint16_t gate, uint16_t pot_a, uint16_t pot_d, uint16_t pot_r, uint8_t noSustain)
+
+uint16_t module_env::int_adsr(uint16_t gate, uint16_t pot_a, uint16_t pot_d, uint16_t pot_r, uint8_t noSustain)
 {
     uint16_t out = 2048; // out level (2048 = 0V)
 
@@ -86,10 +78,10 @@ uint16_t module_adsr::int_adsr(uint16_t gate, uint16_t pot_a, uint16_t pot_d, ui
     return (out);
 }
 
-void module_adsr::draw(display &disp, uint16_t gate, uint16_t pot_a, uint16_t pot_d, uint16_t pot_r, uint8_t noSustain)
+void module_env::draw(display &disp, uint16_t gate, uint16_t pot_a, uint16_t pot_d, uint16_t pot_r, uint8_t noSustain)
 {
 
-    uint16_t yOffset = 142;
+    uint16_t yOffset = 160;
     uint16_t height = 64;
     uint16_t sh = height >> 1;
     uint8_t radius = 4;
@@ -103,28 +95,28 @@ void module_adsr::draw(display &disp, uint16_t gate, uint16_t pot_a, uint16_t po
             disp.fillRectangle(220, 80, 10, 10, RGBToWord(0xff, 0xff, 0x00));
         else
             disp.fillRectangle(220, 80, 10, 10, RGBToWord(0x00, 0xff, 0x00));
-        disp.putPixel(220, 80, black);
-        disp.putPixel(220, 89, black);
-        disp.putPixel(229, 80, black);
-        disp.putPixel(229, 89, black);
+        disp.putPixel(220, 80, blackColor);
+        disp.putPixel(220, 89, blackColor);
+        disp.putPixel(229, 80, blackColor);
+        disp.putPixel(229, 89, blackColor);
     }
 
     if (pot_a >> scale != a || pot_d >> scale != d || pot_r >> scale != r)
     {
         // delete previous envelope (lines + circles)
-        disp.drawLine(xOffset, yOffset, xOffset + a, yOffset - height, black); // A
-        disp.fillCircle(xOffset + a, yOffset - height, radius, black);
+        disp.drawLine(xOffset, yOffset, xOffset + a, yOffset - height, blackColor); // A
+        disp.fillCircle(xOffset + a, yOffset - height, radius, blackColor);
         if (a + d < 238 - xOffset)
         {
-            disp.drawLine(xOffset + a, yOffset - height, xOffset + a + d, yOffset - sh, black); // D
-            disp.fillCircle(xOffset + a + d, yOffset - sh, radius, black);
+            disp.drawLine(xOffset + a, yOffset - height, xOffset + a + d, yOffset - sh, blackColor); // D
+            disp.fillCircle(xOffset + a + d, yOffset - sh, radius, blackColor);
         }
         if (a + d + s < 238 - xOffset)
-            disp.drawLine(xOffset + a + d, yOffset - sh, xOffset + a + d + s, yOffset - sh, black); // S
+            disp.drawLine(xOffset + a + d, yOffset - sh, xOffset + a + d + s, yOffset - sh, blackColor); // S
         if (a + d + s + r < 238 - xOffset)
         {
-            disp.drawLine(xOffset + a + d + s, yOffset - sh, xOffset + a + d + s + r, yOffset, black); // R
-            disp.fillCircle(xOffset + a + d + s + r, yOffset, radius, black);
+            disp.drawLine(xOffset + a + d + s, yOffset - sh, xOffset + a + d + s + r, yOffset, blackColor); // R
+            disp.fillCircle(xOffset + a + d + s + r, yOffset, radius, blackColor);
         }
 
         a = pot_a >> scale;
@@ -147,11 +139,11 @@ void module_adsr::draw(display &disp, uint16_t gate, uint16_t pot_a, uint16_t po
         if (a + d + s + r < 238 - xOffset)
             disp.drawLine(xOffset + a + d + s, yOffset - sh, xOffset + a + d + s + r, yOffset, rColor); // R
 
-        disp.fillCircle(xOffset + a, yOffset - height, radius - 1, black);
-        disp.fillCircle(xOffset + a + d + s + r, yOffset, radius - 1, black);
+        disp.fillCircle(xOffset + a, yOffset - height, radius - 1, blackColor);
+        disp.fillCircle(xOffset + a + d + s + r, yOffset, radius - 1, blackColor);
         if (a + d < 238 - xOffset)
         {
-            disp.fillCircle(xOffset + a + d, yOffset - sh, radius - 1, black);
+            disp.fillCircle(xOffset + a + d, yOffset - sh, radius - 1, blackColor);
             disp.drawCircle(xOffset + a + d, yOffset - sh, radius, dColor);
         }
         if (a + d + s + r < 238 - xOffset)
@@ -161,31 +153,21 @@ void module_adsr::draw(display &disp, uint16_t gate, uint16_t pot_a, uint16_t po
         }
 
         // show pot values
-        char str[11];
+        /* char str[11];
         sprintf(str, "A: %d", pot_a);
-        disp.fillRectangle(130, 160, 70, 16, black);
-        disp.putStr(str, 130 - 9, 160, aColor, black);
+        disp.fillRectangle(130, 160, 70, 16, blackColor);
+        disp.putStr(str, 130 - 9, 160, aColor, blackColor);
         sprintf(str, "D: %d", pot_d);
-        disp.fillRectangle(130, 180, 70, 16, black);
-        disp.putStr(str, 130 - 9, 180, dColor, black);
+        disp.fillRectangle(130, 180, 70, 16, blackColor);
+        disp.putStr(str, 130 - 9, 180, dColor, blackColor);
         sprintf(str, "S: 50%%");
-        disp.fillRectangle(130, 200, 70, 16, black);
-        disp.putStr(str, 130 - 9, 200, sColor, black);
+        disp.fillRectangle(130, 200, 70, 16, blackColor);
+        disp.putStr(str, 130 - 9, 200, sColor, blackColor);
         sprintf(str, "R: %d", pot_r);
-        disp.fillRectangle(130, 220, 70, 16, black);
-        disp.putStr(str, 130 - 9, 220, rColor, black);
+        disp.fillRectangle(130, 220, 70, 16, blackColor);
+        disp.putStr(str, 130 - 9, 220, rColor, blackColor); */
     }
 
     if (gate < 2682) // 3V3 trig level
-        disp.fillRectangle(220, 80, 10, 10, black);
+        disp.fillRectangle(220, 80, 10, 10, blackColor);
 }
-
-void module_adsr::init(display &disp)
-{
-    // show logo
-    disp.showImg(img_env, sizeof(img_env), 0, 0, 240, 60, logoColor);
-    // clear background
-    disp.fillRectangle(0, 60, 240, 240 - 60, black);
-}
-
-//-----10|-------20|-------30|-------40|-------50|-------60|-------70|-------80|

@@ -9,11 +9,13 @@
 // Format of colour value: <BGND 1 bit><Red 5 bits><Green 5 bits><Blue 5 bits>
 //#define RGBToWord( R,  G,  B)  (  ((G&0xf8) << (11-3)) | ((R&0xfc) << (5-2)) | ((B&0xf8)>>3) )
 #define RGBToWord( R,  G,  B)  (  ((B&0xf8) << (11-3)) | ((G&0xfc) << (5-2)) | ((R&0xf8)>>3) )
+
 class display
 {
 public:
     display(){};
-    void begin(spi *SPI, const uint8_t *font);
+    //void begin(spi *SPI, const uint8_t *font);
+    void begin(spi *SPI) ;
     void showImg(const uint8_t *img, uint16_t size, uint8_t x, uint8_t y, uint16_t width, uint16_t height, uint16_t color);
     void putChar(char ch, uint8_t x, uint8_t y, uint16_t txtFg, uint16_t txtBg);
     void putStr(const char *str, uint8_t x, uint8_t y, uint16_t txtFg, uint16_t txtBg);
@@ -53,6 +55,6 @@ private:
     }
     spi *SPI;
     int XYSwapped;
-    const uint8_t  *_font ; // ' ' .. '~'
+    //const uint8_t  *font ; // ' ' .. '~'
 };
 #endif

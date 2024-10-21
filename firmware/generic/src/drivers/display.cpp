@@ -2,9 +2,12 @@
 #include "display.h"
 #include "spi.h"
 #include "SysTick.h"
+#include "res/font.h"
 extern "C"
 {
-#include "gd32vf103.h"
+    #include "gd32vf103.h"
+
+    //extern "C" const uint8_t font[1520];
 }
 extern SysTick stk;
 /*
@@ -29,7 +32,7 @@ extern SysTick stk;
     RST   PB1
     CS    PB2
 */
-void display::begin(spi *SPI, const uint8_t *font)
+void display::begin(spi *SPI)
 {
 
     this->SPI = SPI; // remember the SPI interface
@@ -193,12 +196,11 @@ void display::putChar(char ch, uint8_t x, uint8_t y, uint16_t txtFg, uint16_t tx
     if ((' ' <= ch) && (ch <= '~')) // 7bit ASCII
     {
         openAperture(x, y, x + 8 - 1, y + 16 - 1);
-        ch += 4;
-        const uint8_t *charFont = _font + (uint8_t)ch * 16;
-        for (uint8_t y = 0; y < 16; ++y)
-        {
-            for (uint8_t x = 0, c = charFont[y]; x < 8; ++x, c >>= 1)
-            {
+        ch -= 32; // why this offset ... 
+        const uint8_t *charFont = &font[(uint8_t)ch * 16];
+        
+        for (uint8_t y = 0; y < 16; ++y) {
+            for (uint8_t x = 0, c = charFont[y]; x < 8; ++x, c >>= 1) {
                 uint16_t rgb = (c & 0x01) ? txtFg : txtBg;
                 writeData16(rgb);
             }
@@ -231,6 +233,7 @@ void display::putImage(uint16_t x, uint16_t y, uint16_t width, uint16_t height, 
         }
     }
 }
+
 void display::drawRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t Colour)
 {
     drawLine(x, y, x + w, y, Colour);
@@ -238,6 +241,7 @@ void display::drawRectangle(uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint
     drawLine(x + w, y, x + w, y + h, Colour);
     drawLine(x, y + h, x + w, y + h, Colour);
 }
+
 void display::fillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t height, uint16_t Colour)
 {
     openAperture(x, y, x + width - 1, y + height - 1);
@@ -249,6 +253,7 @@ void display::fillRectangle(uint16_t x, uint16_t y, uint16_t width, uint16_t hei
         }
     }
 }
+
 void display::drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t Colour)
 {
     // Reference : https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
@@ -292,6 +297,7 @@ void display::drawCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t Col
         }
     }
 }
+
 void display::fillCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t Colour)
 {
     // Reference : https://en.wikipedia.org/wiki/Midpoint_circle_algorithm
@@ -333,6 +339,7 @@ void display::fillCircle(uint16_t x0, uint16_t y0, uint16_t radius, uint16_t Col
         }
     }
 }
+
 void display::drawLineLowSlope(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t Colour)
 {
     // Reference : https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -386,6 +393,7 @@ void display::drawLineHighSlope(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t 
         D = D + 2 * dx;
     }
 }
+
 void display::drawLine(uint16_t x0, uint16_t y0, uint16_t x1, uint16_t y1, uint16_t Colour)
 {
     // Reference : https://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
@@ -457,34 +465,42 @@ void display::RSLow()
 { // drive D/C pin low
     gpio_bit_reset(GPIOA, GPIO_PIN_11);
 }
+
 void display::RSHigh()
 { // drive D/C pin high
     gpio_bit_set(GPIOA, GPIO_PIN_11);
 }
+
 void display::RSTLow()
 { // Drive reset low
     gpio_bit_reset(GPIOA, GPIO_PIN_8);
 }
+
 void display::RSTHigh()
 { // Drive reset high
     gpio_bit_set(GPIOA, GPIO_PIN_8);
 }
+
 void display::CSLow()
 { // Drive chip select low
     //    gpio_bit_reset(GPIOB,GPIO_PIN_2);
 }
+
 void display::CSHigh()
 { // Drive chip select high
     //    gpio_bit_set(GPIOB,GPIO_PIN_2);
 }
+
 void display::BLKLow()
 { // Drive backlight low (off)
     gpio_bit_reset(GPIOB, GPIO_PIN_10);
 }
+
 void display::BLKHigh()
 { // Drive backlight high (on)
     gpio_bit_set(GPIOB, GPIO_PIN_10);
 }
+
 void display::writeCommand(uint8_t Cmd)
 {
     RSLow();
@@ -492,6 +508,7 @@ void display::writeCommand(uint8_t Cmd)
     SPI->writeData8(Cmd);
     CSHigh();
 }
+
 void display::writeData8(uint8_t Data)
 {
     RSHigh();
@@ -499,6 +516,7 @@ void display::writeData8(uint8_t Data)
     SPI->writeData8(Data);
     CSHigh();
 }
+
 void display::writeData16(uint16_t Data)
 {
     RSHigh();
@@ -506,6 +524,7 @@ void display::writeData16(uint16_t Data)
     SPI->writeData16(Data);
     CSHigh();
 }
+
 void display::exchangeXY()
 {
     writeCommand(0x36);
@@ -520,6 +539,7 @@ void display::exchangeXY()
         writeData8(0x00);
     }
 }
+
 uint32_t display::getWidth()
 {
     if (!XYSwapped)
@@ -531,6 +551,7 @@ uint32_t display::getWidth()
         return SCREEN_HEIGHT;
     }
 }
+
 uint32_t display::getHeight()
 {
     if (!XYSwapped)
@@ -543,8 +564,7 @@ uint32_t display::getHeight()
     }
 }
 
-void display::showSprite(const uint8_t *rle_data, uint16_t size)
-{
+void display::showSprite(const uint8_t *rle_data, uint16_t size) {
     const uint8_t *__ip, *__il, *__rd;
     __ip = (rle_data);
     __il = __ip + (size)*2;
