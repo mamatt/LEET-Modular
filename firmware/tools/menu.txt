@@ -1,4 +1,4 @@
-OSC
+VCO
 	< back
 	sine am|128
 	sine add|129
@@ -17,26 +17,26 @@ OSC
 	triangle 3x|142
 	quantize|143
 	cvout|144
-Noise|145
-LFO
-	< back
-	LFO sine|146
-	LFO square|147
-	LFO triangle|148
+VCA|160
 VCF
 	< back
 	2 pole v1|150
 	2 pole v2|151
 	4 pole|152
 	test|153
-VCA|160
-SnH|161
-Envelope
+Env
 	<back
 	ADSR|162
 	ADR|163
+LFO
+	< back
+	LFO sine|146
+	LFO square|147
+	LFO triangle|148
 Delay|164
-CV_Play|165
+Noise|145
+SnH|161
+CV Play|165
 Settings
 	< back
 	calibrate
@@ -54,10 +54,5 @@ Settings
 		manual CV|210
 	about
 		< back
-		Modular 1337
-		Version 0.85
-Not Implemented
-	< back
-	Mixer
-	Sequencer
-	Sampler
+		 - LEET -
+		Version 0.9

@@ -1,20 +1,15 @@
-//-----10|-------20|-------30|-------40|-------50|-------60|-------70|-------80|
+
 #include "module_vcf.h"
-extern "C"
-{
-#include "gd32vf103.h"
+#include "drivers/display.h"
+#include "res/colors.h"
+#include <stdio.h>
+
+extern "C" {
+    #include "gd32vf103.h"
 }
 
-/*  potentiometer and I/O mapping
-    R  P2
-    P4 P3
-    C0 C1
-    D0 D1
-*/
-
 // 4 pole ladder resonant low pass filter (Karlsen fast ladder)
-uint16_t module_vcf::r4pole1(uint16_t sample, uint16_t cutoff, uint16_t resonance)
-{
+uint16_t module_vcf::r4pole1(uint16_t sample, uint16_t cutoff, uint16_t resonance) {
     static int16_t oldOut;
     if (sample > 2048 && oldOut < 2048)
         phaseTrig = 1;
@@ -46,8 +41,7 @@ uint16_t module_vcf::r4pole1(uint16_t sample, uint16_t cutoff, uint16_t resonanc
 }
 
 // 2-pole resonant low pass filter (Paul Kellett)
-uint16_t module_vcf::r2pole1(uint16_t sample, uint16_t cutoff, uint16_t resonance)
-{
+uint16_t module_vcf::r2pole1(uint16_t sample, uint16_t cutoff, uint16_t resonance) {
     static int16_t oldOut;
     if (sample > 2048 && oldOut < 2048)
         phaseTrig = 1;
@@ -76,8 +70,7 @@ uint16_t module_vcf::r2pole1(uint16_t sample, uint16_t cutoff, uint16_t resonanc
 }
 
 // 2-pole resonant low pass filter (BASS)
-uint16_t module_vcf::r2pole2(uint16_t sample, uint16_t cutoff, uint16_t resonance)
-{
+uint16_t module_vcf::r2pole2(uint16_t sample, uint16_t cutoff, uint16_t resonance) {
     // F = LPF (cutoff)
     // Q = RESONANCE
     // q = SCALED_RESONANCE
@@ -110,8 +103,7 @@ uint16_t module_vcf::r2pole2(uint16_t sample, uint16_t cutoff, uint16_t resonanc
 }
 
 // test for filter development
-uint16_t module_vcf::test(uint16_t sample, uint16_t cutoff, uint16_t resonance)
-{
+uint16_t module_vcf::test(uint16_t sample, uint16_t cutoff, uint16_t resonance) {
     static int16_t oldOut;
     if (sample > 2048 && oldOut < 2048)
         phaseTrig = 1;
@@ -135,8 +127,7 @@ uint16_t module_vcf::test(uint16_t sample, uint16_t cutoff, uint16_t resonance)
 /*
 // MOOG 4pole 24 db resonant low pass (Stilson/Smith & Timo Tossavainen)
 // ***doesnt work*** - takes too long to calculate at 44kHz ;(
-uint16_t module_vcf::moog24db(uint16_t sample, uint16_t cutoff, uint16_t resonance)
-{
+uint16_t module_vcf::moog24db(uint16_t sample, uint16_t cutoff, uint16_t resonance) {
 
     static int16_t oldOut;
     if (sample > 2048 && oldOut < 2048)
@@ -172,8 +163,7 @@ uint16_t module_vcf::moog24db(uint16_t sample, uint16_t cutoff, uint16_t resonan
 
 /*
 // integer implementation of 2pole filter, without feedback division. fast, but not so good...
-uint16_t module_vcf::r2pole3(uint16_t sample, uint16_t cutoff, uint16_t resonance)
-{
+uint16_t module_vcf::r2pole3(uint16_t sample, uint16_t cutoff, uint16_t resonance) {
     static int16_t filterValue;
     static int16_t filterOut;
     static int16_t out;
@@ -197,6 +187,7 @@ uint16_t module_vcf::r2pole3(uint16_t sample, uint16_t cutoff, uint16_t resonanc
     return (out);
 }
 */
+
 /*
 // Running average analog filter ***works bad, too steep (exponential by nature)***:
 static uint16_t anHistory[4096]; // old readings from the analog input. Uses 8192 bytes of RAM...
@@ -230,5 +221,3 @@ anAvg = anTotal / newLength; // calculate the average:
 oldLength = newLength;       //
 return (anAvg);              // return average value
 */
-
-//-----10|-------20|-------30|-------40|-------50|-------60|-------70|-------80|

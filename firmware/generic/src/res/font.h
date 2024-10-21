@@ -1,8 +1,7 @@
 extern "C"
 {
-#include "gd32vf103.h"
-  extern const uint8_t font[1520] ;
-}
+    #include "gd32vf103.h"
+} 
 
 /*
   Font copied from https://github.com/sipeed/Longan_GD32VF_examples.git
@@ -19,6 +18,11 @@ extern "C"
    See the License for the specific language governing permissions and
    limitations under the License.
 */
+
+// more fonts to check
+// https://lexus2k.github.io/ssd1306/group___l_c_d___f_o_n_t_s.html
+
+
 
 const uint8_t font[1520]={
 0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,

@@ -1,4 +1,3 @@
-//-----10|-------20|-------30|-------40|-------50|-------60|-------70|-------80|
 #include "module_delay.h"
 extern "C"
 {
@@ -14,7 +13,6 @@ extern "C"
 
 uint16_t module_delay::delay(uint16_t sample, uint16_t mix, uint16_t length)
 {
-
     static uint16_t anHistory[4096];    // old readings from the analog input. Uses 8192 bytes of RAM...
     static uint16_t anPos = 0;          // index of the current reading
     uint16_t old;                       //
@@ -28,4 +26,3 @@ uint16_t module_delay::delay(uint16_t sample, uint16_t mix, uint16_t length)
     anPos++;                            // advance to the next position in the array:
     return (tmp);                       // return (mix)
 }
-//-----10|-------20|-------30|-------40|-------50|-------60|-------70|-------80|

@@ -1,9 +1,10 @@
 #include "scope.h"
 #include "drivers/display.h"
+
 scope::scope(uint16_t Colour)
 {
     this->Colour = Colour;
-    offset = 76; // add space above scope
+    offset = 96 ; // add space above scope
     scale = 1;
     BufferInputIndex = 0;
     for (uint32_t i = 0; i < SCOPE_BUFFER_SIZE; i++)
@@ -44,3 +45,5 @@ void scope::insert(uint16_t value)
     Buffer[BufferInputIndex] = value;
     BufferInputIndex = (BufferInputIndex + 1) % SCOPE_BUFFER_SIZE;
 }
+
+
