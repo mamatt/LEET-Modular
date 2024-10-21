@@ -1,4 +1,15 @@
 # LEET-Modular
+
+This is my fork from the great modular projet https://vonkonow.com/wordpress/leet-modular/
+
+  - Complete menu redesign
+  - working VCA implementation
+  - lot's of code rework
+  - More to come !
+
+![image](modularsetup.jpg)
+
+---
 This is the GitHub repository containing source code, schematic and 3D models for the LEET modular device: https://vonkonow.com/wordpress/leet-modular/
 
 Description: LEET modular is a multifunctional Eurorack compatible module. It is versatile, easy to build, cheap and open source.
